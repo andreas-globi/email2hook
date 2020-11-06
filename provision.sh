@@ -26,7 +26,7 @@ if apt -qq list --installed postfix 2>/dev/null | grep -q postfix; then
 fi
 if [ "$OK" = 0 ]; then
 	echo -e "installing postfix"
-	if [ ! eval "sudo apt-get install postfix -y" ]; then
+	if ! eval "sudo apt-get install postfix -y"; then
 		echo -e "ERROR: installing postfix failed"
 		exit 1
 	fi
@@ -41,7 +41,7 @@ if apt -qq list --installed postfix-pcre 2>/dev/null | grep -q postfix-pcre; the
 fi
 if [ "$OK" = 0 ]; then
 	echo -e "installing postfix-pcre"
-	if [ ! eval "sudo apt-get install postfix-pcre -y" ]; then
+	if ! eval "sudo apt-get install postfix-pcre -y"; then
 		echo -e "ERROR: installing postfix-pcre failed"
 		exit 1
 	fi
@@ -56,7 +56,7 @@ if apt -qq list --installed php-cli 2>/dev/null | grep -q php-cli; then
 fi
 if [ "$OK" = 0 ]; then
 	echo -e "installing php-cli"
-	if [ ! eval "sudo apt-get install php-cli -y" ]; then
+	if ! eval "sudo apt-get install php-cli -y"; then
 		echo -e "ERROR: installing php-cli failed"
 		exit 1
 	fi
@@ -115,6 +115,46 @@ fi
 if [ ! -d /home/$USERNAME/mail ]; then
 	mkdir /home/$USERNAME/mail
 fi
+
+CONFIG=$(cat <<__EOT
+<?php
+// config
+// [{name:"name",domains:["domain.com"],url:"http://domain.com/hook",count:1},...]
+// where
+// - name    = a genric service name
+// - domains = an array of email catch domains (can include * wildcard)
+// - url     = the http end-point to post to
+// - count   = number of daemons to run
+// see config.sample.php for examples
+\$config = [
+];
+__EOT
+)
+if [ ! -f $CURDIR/config/config.php ]; then
+	echo "$CONFIG" > $CURDIR/config/config.php
+fi
+
+
+# allow firewall if needed
+echo -e "checking UFW"
+if which ufw > /dev/null; then
+	OK=0
+	if sudo ufw status | grep -q "^Postfix[ \/].*ALLOW"; then
+		OK=1
+	fi
+	if [ "$OK" = 0 ]; then
+		echo -e "allowing postfix in ufw"
+		sudo ufw allow Postfix
+	fi
+else
+	echo -e "ufw not detected"
+fi
+
+
+# reload postfix
+echo -e "reloading postfix"
+sudo postfix reload
+
 
 # done
 # ==============================
