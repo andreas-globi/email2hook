@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__."/include.php";
-
 // creates config files for postfix from php config array
+
+require_once __DIR__."/include.php";
 
 $domains = [];
 $mailboxes = [];

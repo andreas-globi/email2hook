@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#
+# daemon manager - runs every minute and ensures that daemon_master.php is running
+#
 # requires cron entry:
 # * * * * * bash daemon_manager.sh
 

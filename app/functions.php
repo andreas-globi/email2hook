@@ -1,17 +1,11 @@
 <?php
 
+// general shared functions
+
 // get global config
 function config() {
 	global $config;
 	return $config;
-}
-
-// get time of last config update
-function conf_time() {
-	clearstatcache();
-	$conf = __DIR__."/../config/config.php";
-	$time = filemtime($conf);
-	return $time;
 }
 
 // get list of pids for running process

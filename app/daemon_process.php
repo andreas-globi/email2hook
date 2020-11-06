@@ -18,17 +18,8 @@ if ( $app === false ) {
 
 error_log("starting process ".$app_name);
 
-$time = conf_time();
-
 while ( true ) {
 
-	// if config file changed - quit and wait for re-spawn
-	$check = conf_time();
-	if ( $check != $time ) {
-		error_log("killing process ".$app_name);
-		exit;
-	}
-	
 	// real work will come here
 	
 	usleep(100000);
