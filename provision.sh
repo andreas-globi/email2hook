@@ -115,13 +115,18 @@ fi
 if [ ! -d /home/$USERNAME/mail ]; then
 	mkdir /home/$USERNAME/mail
 fi
+if [ ! -f /var/log/email2hook.log ]; then
+	sudo touch /var/log/email2hook.log
+	sudo chown $USERNAME:$USERNAME /var/log/email2hook.log
+	sudo chmod 664 /var/log/email2hook.log
+fi
 
 CONFIG=$(cat <<__EOT
 <?php
 // config
 // [{name:"name",domains:["domain.com"],url:"http://domain.com/hook",count:1},...]
 // where
-// - name    = a genric service name
+// - name    = a generic service name
 // - domains = an array of email catch domains (can include * wildcard)
 // - url     = the http end-point to post to
 // - count   = number of daemons to run
@@ -136,6 +141,7 @@ fi
 
 
 # allow firewall if needed
+# ==============================
 echo -e "checking UFW"
 if which ufw > /dev/null; then
 	OK=0
@@ -152,8 +158,25 @@ fi
 
 
 # reload postfix
+# ==============================
 echo -e "reloading postfix"
 sudo postfix reload
+
+
+# ensure cron job
+# ==============================
+echo -e "ensuring cron job"
+
+if ! crontab -l | grep -qF "daemon_manager"; then
+	echo -e "installing cron"
+	crontab -l > /tmp/cron
+	echo -e "* * * * * bash $CURDIR/app/daemon_manager.sh" >> /tmp/cron
+	if ! eval "crontab /tmp/cron"; then
+		echo -e "ERROR: installing cron failed"
+		exit 1
+	fi
+	service cron reload
+fi
 
 
 # done

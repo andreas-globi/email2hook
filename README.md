@@ -29,6 +29,6 @@ bash provision.sh
 
 ## Configuration
 
-1. edit ``config/config.php`
-2. reload with ``bash reload.sh`
+1. edit `config/config.php`
+2. reload with `bash reload.sh`
 

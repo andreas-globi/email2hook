@@ -15,9 +15,13 @@ foreach ( $config as $app ) {
 	if ( ! is_string($app['name']) || ! is_string($app['url']) || ! is_numeric($app['count']) || ! is_array($app['domains']) ) {
 		throw new Exception("bad config bad values");
 	}
+	$name = $app['name'];
+	if ( preg_replace("/[^a-zA-Z0-9_]/", "", $name) != $name ) {
+		throw new Exception("bad name ".$name);
+	}
 	
-	// vdomains wants /domain\.tld/ OK
-	// vmailbox wants /@domain\.tld/ appname/
+	// vdomains wants /((\w[\w\-]*)\.)+domain\.tld/ OK
+	// vmailbox wants /@((\w[\w\-]*)\.)+domain\.tld/ appname/
 	
 	foreach ( $app['domains'] as $domain ) {
 		
@@ -26,7 +30,7 @@ foreach ( $config as $app ) {
 		}
 		
 		$domain = preg_quote($domain);
-		$domain = str_replace(['\*\.', '\*'], ['*.', '*'], $domain);
+		$domain = str_replace(['\*\.', '\*'], ['((\w[\w\-]*)\.)+', '(\w[\w\-]*)+'], $domain);
 		$domains[] = "/".$domain."/ OK";
 		$mailboxes[] = "/@".$domain."/ " . $app['name'];
 		
