@@ -36,6 +36,7 @@ function maildir() {
 // --------------------
 function getQueue($app_name) {
 	$directory = maildir()."/".$app_name."/new";
+	if ( ! file_exists($directory) ) return [];
 	$files = array_diff(scandir($directory), array('..', '.'));
 	foreach ( $files as $k => $file ) {
 		$files[$k] = $directory."/".$file;
