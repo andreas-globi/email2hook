@@ -98,7 +98,7 @@ function shouldWait($filename) {
 	$now = time();
 	$age = $now - $original_time;
 	if ( $err_count < 1 || $err_count > 8 ) {
-		$delay = 3600;
+		$delay = 3600*($err_count-8);
 	} else {
 		$delay = intval(exp($err_count));
 	}
@@ -265,3 +265,20 @@ function printTable ( $table ) {
 		print "NULL\n";
 	}
 }
+
+
+// debug print something cli
+function dp($name, $val) {
+	print $name." = ";
+	if ($val===NULL) print "NULL";
+	elseif ($val===true) print "TRUE";
+	elseif ($val===false) print "FALSE";
+	elseif ($val===0) print "0";
+	elseif ($val==="") print '""';
+	elseif (is_numeric($val)) print $val;
+	elseif (is_string($val)) print $val;
+	else print_r($val);
+	print "\n";
+}
+
+
