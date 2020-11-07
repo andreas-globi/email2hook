@@ -22,7 +22,7 @@ Easily set up an Ubuntu server as a mailsink that receives inbound email and POS
 
 ```
 cd ~
-git clone git@github.com:andreas-globi/email2hook.git
+git clone https://github.com/andreas-globi/email2hook.git
 cd email2hook
 bash provision.sh
 ```
