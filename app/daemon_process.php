@@ -21,6 +21,13 @@ error_log("starting process ".$app_name);
 while ( true ) {
 
 	// real work will come here
+	$filename = reserveFile($app_name);
+	if ( $filename ) {
+		// do something
+		error_log("processing ".$filename);
+		sleep(1);
+		unReserve($filename);
+	}
 	
 	usleep(100000);
 	

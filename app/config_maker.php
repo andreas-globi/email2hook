@@ -32,7 +32,7 @@ foreach ( $config as $app ) {
 		$domain = preg_quote($domain);
 		$domain = str_replace(['\*\.', '\*'], ['((\w[\w\-]*)\.)+', '(\w[\w\-]*)+'], $domain);
 		$domains[] = "/".$domain."/ OK";
-		$mailboxes[] = "/@".$domain."/ " . $app['name'];
+		$mailboxes[] = "/@".$domain."/ " . $app['name']."/";
 		
 	}
 	

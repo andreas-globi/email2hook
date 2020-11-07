@@ -6,14 +6,21 @@ require_once __DIR__."/include.php";
 ini_set("error_log", "/var/log/email2hook.log");
 error_log("starting master");
 
-$time = filemtime(__FILE__);
+$time_this = filemtime(__FILE__);
+$time_config = filemtime(__DIR__."/../config/config.php");
 
 while ( true ) {
 
-	// if this file changed - quit and wait for re-spawn
 	clearstatcache();
+	// if this file changed - quit and wait for re-spawn
 	$check = filemtime(__FILE__);
-	if ( $check != $time ) {
+	if ( $check != $time_this ) {
+		error_log("killing master");
+		exit;
+	}
+	// if config changed - quit and wait for re-spawn
+	$check = filemtime(__DIR__."/../config/config.php");
+	if ( $check != $time_config ) {
 		error_log("killing master");
 		exit;
 	}
