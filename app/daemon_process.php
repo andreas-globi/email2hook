@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__."/include.php";
-ini_set("error_log", "/var/log/email2hook.log");
 
 $app_name = $argv[1];
 if ( empty($app_name) ) {

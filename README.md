@@ -36,7 +36,7 @@ bash provision.sh
 
 To see your queue sizes and ages, use: `php stats.php`
 
-Logs are in `/var/log/email2hook.log`
+Logs are in `/home/{USERNAME}/email2hook.log`
 
 ---
 

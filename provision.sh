@@ -179,6 +179,25 @@ if ! crontab -l | grep -qF "daemon_manager"; then
 fi
 
 
+# add to logrotate
+# ==============================
+echo -e "adding logroate conf"
+CONFIG=$(cat <<__EOT
+/home/$USERNAME/email2hook.log {
+        su $USERNAME $USERNAME
+        daily
+        missingok
+        rotate 4
+        compress
+        delaycompress
+        notifempty
+        create 664 $USERNAME $USERNAME
+}
+__EOT
+)
+echo "$CONFIG" | sudo tee /etc/logrotate.d/email2hook > /dev/null
+
+
 # done
 # ==============================
 echo -e "done"

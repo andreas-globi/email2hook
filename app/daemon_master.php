@@ -3,7 +3,6 @@
 // master daemon - spawns child daemons and ensures they're running
 
 require_once __DIR__."/include.php";
-ini_set("error_log", "/var/log/email2hook.log");
 error_log("starting master");
 
 $time_this = filemtime(__FILE__);
