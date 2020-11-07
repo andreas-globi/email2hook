@@ -63,6 +63,22 @@ if [ "$OK" = 0 ]; then
 fi
 
 
+# ensure php-curl
+# ==============================
+echo -e "checking php-curl"
+OK=0
+if apt -qq list --installed php-curl 2>/dev/null | grep -q php-curl; then
+	OK=1
+fi
+if [ "$OK" = 0 ]; then
+	echo -e "installing php-curl"
+	if ! eval "sudo apt-get install php-curl -y"; then
+		echo -e "ERROR: installing php-curl failed"
+		exit 1
+	fi
+fi
+
+
 # postfix config main.cf
 # ==============================
 echo -e "checking postfix config"
