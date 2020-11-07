@@ -111,6 +111,7 @@ function shouldWait($filename) {
 // curl post payload
 // --------------------
 function curlToHook($url, $payload, $filename="unknown") {
+	error_log("INFO posting file ".$filename." to ".$url);
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
