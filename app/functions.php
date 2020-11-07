@@ -83,6 +83,30 @@ function getAge($filename) {
 }
 
 
+// decide if we should retry a file already (many errors should wait a while)
+// --------------------
+function shouldWait($filename) {
+	$name = basename($filename);
+	// not an error - don't wait
+	if ( substr($name, 0, 4) != "xerr" ) {
+		return false; 
+	}
+	// it's an error - get count
+	$parts = explode(".", $name);
+	$original_time = intval($parts[2]);
+	$err_count = intval($parts[1]);
+	$now = time();
+	$age = $now - $original_time;
+	if ( $err_count < 1 || $err_count > 8 ) {
+		$delay = 3600;
+	} else {
+		$delay = intval(exp($err_count));
+	}
+	if ( $age > $delay ) return false;
+	return true;
+}
+
+
 // curl post payload
 // --------------------
 function curlToHook($url, $payload, $filename="unknown") {
@@ -165,6 +189,11 @@ function reserveFile($app_name) {
 		// if it's not a lock file check if there is a lock file
 		if ( in_array($filename.".lock", $queue) ) {
 			continue;
+		}
+		// if it's an old error we should wait
+		if ( shouldWait($filename) ) {
+			// no point trying more - all other files will be even older
+			return false;
 		}
 		// if it's not a lock file and there is no lock file create one
 		touch($filename.".lock");
