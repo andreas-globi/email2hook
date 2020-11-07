@@ -29,7 +29,7 @@ bash provision.sh
 
 ## Configuration
 
-1. edit `config/config.php`
+1. edit `config/config.php` (see config/config.sample.php for inspiration)
 2. reload with `bash reload.sh` (note that it can take up to a minute for daemons to reload - have to wait for the cron job to re-spawn them)
 
 ## Administration
@@ -38,9 +38,11 @@ To see your queue sizes and ages, use: `php stats.php`
 
 Logs are in `/home/{USERNAME}/email2hook.log`
 
+To test an email route, use `bash testaddress.sh {emailaddress}` - eg `bash testaddress.sh me@domain.com`
+
 ---
 
 ### Reasoning
 
-I use MailGun and SendGrid for incoming email parsing and 80% of the monthly cost is towards incoming email. So it's a huge expense that creates unnecessary vendor lock-in.
+We use MailGun and SendGrid for incoming email parsing and 80% of the monthly cost is towards incoming email. So it's a huge expense that creates unnecessary vendor lock-in.
 This simple Postfix PHP daemon setup replaces all that for $20/month (a basic 4GB Digital Ocean droplet can easily handle many thousands of emails per day).
