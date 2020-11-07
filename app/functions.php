@@ -2,13 +2,17 @@
 
 // general shared functions
 
+
 // get global config
+// --------------------
 function config() {
 	global $config;
 	return $config;
 }
 
+
 // get list of pids for running process
+// --------------------
 function getPidList($program_name) {
 	$foo = exec('ps -ax | grep "' . $program_name.'"', $output);
 	if ( !$foo || !is_array($output) ) return [];
@@ -20,12 +24,16 @@ function getPidList($program_name) {
 	return $pids;
 }
 
+
 // return the mail dir
+// --------------------
 function maildir() {
 	return "/home/".$GLOBALS['me']."/mail";
 }
 
+
 // get all files in an app's queue
+// --------------------
 function getQueue($app_name) {
 	$directory = maildir()."/".$app_name."/new";
 	$files = array_diff(scandir($directory), array('..', '.'));
@@ -35,12 +43,90 @@ function getQueue($app_name) {
 	return $files;
 }
 
+
+// rename mailbox file to xerr+time() . err_count . original
+// --------------------
+function pushRename($filename) {
+	$name = basename($filename);
+	$dir = dirname($filename);
+	if ( substr($name, 0, 4) != "xerr" ) {
+		return $dir."/xerr".time().".1.".$name;
+	}
+	// it's already an xerr.n.file
+	$parts = explode(".", $name);
+	$num = intval($parts[1]);
+	unset($parts[0]);
+	unset($parts[1]);
+	$name = implode(".", $parts);
+	$num++;
+	return $dir."/xerr".time().".".$num.".".$name;
+}
+
+
+// get age from filename
+// --------------------
+function getAge($filename) {
+	$name = basename($filename);
+	$now = time();
+	$parts = explode(".", $name);
+	$time = 0;
+	if ( substr($name, 0, 4) == "xerr" ) {
+		$time = intval($parts[2]);
+	} else {
+		$time = intval($parts[0]);
+	}
+	if ( $time == 0 ) {
+		$time = filectime($filename);
+	}
+	$age = $now - $time;
+	return $age;
+}
+
+
+// curl post payload
+// --------------------
+function curlToHook($url, $payload, $filename="unknown") {
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,15);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/raw'));
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	
+	$result = curl_exec($ch);
+	$success = true;
+	if ( curl_errno($ch) ) {
+		$success = false;
+		error_log("ERROR posting file ".$filename." to ".$url);
+		error_log(curl_error($ch));
+	}
+	$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	if ( $success && ( $http_status < 200 || $http_status > 209 ) ) {
+		$success = false;
+		error_log("ERROR HTTP Returned Code " . $http_status . " posting file ".$filename." to ".$url);
+		$result = trim(strip_tags($result));
+		if ( ! empty($result) ) {
+			error_log($result);
+		}
+	}
+	curl_close ($ch);
+	return $success;
+}
+
+
 // clear screen
+// --------------------
 function clear() {
 	passthru('clear');
 }
 
+
 // get a server-wide lock
+// --------------------
 function getLock() {
 	$lockFile = "/tmp/email2hook.lock";
 	while (true) {
@@ -53,12 +139,16 @@ function getLock() {
 	}
 }
 
+
 // release lock
+// --------------------
 function releaseLock($fp) {
 	fclose($fp);
 }
 
+
 // reserve a mail file
+// --------------------
 function reserveFile($app_name) {
 	$lock = getLock();
 	if ( $lock === false ) return false;
@@ -83,12 +173,16 @@ function reserveFile($app_name) {
 	return false;
 }
 
+
 // remove lock file
+// --------------------
 function unReserve($filename) {
 	@unlink($filename.".lock");
 }
 
+
 // print a table in ascii (like from a sql result)
+// --------------------
 function printTable ( $table ) {
 	$i=0;
 	$table = array_values($table);

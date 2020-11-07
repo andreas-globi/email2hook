@@ -22,10 +22,20 @@ while ( true ) {
 
 	// real work will come here
 	$filename = reserveFile($app_name);
+	
 	if ( $filename ) {
-		// do something
-		error_log("processing ".$filename);
-		sleep(1);
+		
+		$content = file_get_contents($filename);
+		// try post it to the hook
+		$ret = curlToHook($app['url'], $content, $filename);
+		if ( $ret ) {
+			// success - remove file
+			@unlink($filename);
+		} else {
+			// failure - rename to end of queue
+			$newname = pushRename($filename);
+			rename($filename, $newname);
+		}
 		unReserve($filename);
 	}
 	

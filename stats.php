@@ -17,15 +17,23 @@ function stats() {
 		$row["name"] = $name;
 		$row["cnt"] = sizeof($queue);
 		$row["age"] = 0;
+		$row["err"] = 0;
+		$row["old"] = 0;
 		$row["graph"] = "";
 		if ( sizeof($queue) > 0 ) {
 			$row["age"] = 0;
-			$now = time();
 			foreach ( $queue as $file ) {
 				$time = filectime($file);
-				$age = $now - $time;
-				if ( $age > $row["age"] ) {
-					$row["age"] = $age;
+				$age = getAge($file);
+				if ( substr(basename($file), 0, 4) == "xerr" ) {
+					$row["err"]++;
+					if ( $age > $row["old"] ) {
+						$row["old"] = $age;
+					}
+				} else {
+					if ( $age > $row["age"] ) {
+						$row["age"] = $age;
+					}
 				}
 			}
 			$size = intval($row['cnt']/10)+1;
