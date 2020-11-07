@@ -2,6 +2,9 @@
 
 Easily set up an Ubuntu server as a mailsink that receives inbound email and POSTs it to webhooks.
 
+> **Note**: This is still in development. Not quite completed yet. Come back in 24 hours :-)
+
+
 ## Architecture
 
  - Postfix accepts email and save it to /home/$USERNAME/mail
