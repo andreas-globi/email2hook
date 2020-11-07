@@ -45,4 +45,11 @@ To test an email route, use `bash testaddress.sh {emailaddress}` - eg `bash test
 ### Reasoning
 
 We use MailGun and SendGrid for incoming email parsing and 80% of the monthly cost is towards incoming email. So it's a huge expense that creates unnecessary vendor lock-in.
+
 This simple Postfix PHP daemon setup replaces all that for $20/month (a basic 4GB Digital Ocean droplet can easily handle many thousands of emails per day).
+
+### Resilliency
+
+There's no need to run this in a cluster. Even with all it's flaws, email is resillient by design. If the server cannot accept a message for any reason, the sending server will retry again later.
+
+If it makes you feel better, you can add an email continuity service into the mix with something like DNS Made Easy (around $13/year/domain).
