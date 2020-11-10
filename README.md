@@ -44,11 +44,9 @@ To test an email route, use `bash testaddress.sh {emailaddress}` - eg `bash test
 
 ### Reasoning
 
-Although most ESP's offer inbound email parsing, it creates unnecessary vendor lock-in. Sendgrid does not offer wilcard subdomains and recently suspended our account for unknown reasons (apparently this happens a lot lately if you search the Internet).
-We've been excellent customers for 6+ years and maintain a 99+% reputation, but their systems flagged something and our customers had to suffer. After 3 weeks, we still had not received a response from support as to what happened, why it happened, or how to prevent it from happening again.
-Mailgun recently changed which account level inbound parse is available on without warning, stopping inbound mail for our customers that used that service.
+Although most ESP's offer inbound email parsing, it creates unnecessary vendor lock-in. Most also do not offer wildcard subdomains. Separation of concerns is extremely important in your code AND in your architecture.
 
-This simple Postfix PHP daemon setup replaces all that for $20/month (a basic 4GB Digital Ocean droplet can easily handle many thousands of emails per day). It handles wildcard subdomains, and removes all reliance on outside parties.
+This simple Postfix PHP daemon setup can handle all your incoming email for a super low price (a basic 2GB Digital Ocean droplet can easily handle many thousands of emails per day). It handles wildcard subdomains, and removes all reliance on outside parties.
 
 ### Resilliency
 
