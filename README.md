@@ -9,13 +9,13 @@ Easily set up an Ubuntu server as a mailsink that receives inbound email and POS
  - Postfix accepts email and saves it to /home/{USERNAME}/mail/
  - PHP daemons pick up email from /home/{USERNAME}/mail and POSTs to your webhooks
  - After posting, email is deleted, and on failure, is re-tried with exponential back-off at the end of the queue
- - Postfix virtual config files stored in `/etc/postfix/vdomains` and `/etc/postfix/vmailbox` (owned by root:postfix with 644 permissions)
+ - Postfix virtual config files stored in `/etc/email2hook/vdomains` and `/etc/email2hook/vmailbox` (owned by root:postfix with 644 permissions)
  - Postfix mailbox files are default `{timestamp}.{idnumber}.{hostname}`
  - Failed mailbox files are named `xerr{timestamp}.{error_count}.{original_timestamp}.{idnumber}.{hostname}` - this ensures failures go to the bottom of the queue
 
 ## Requirements
 
- - Ubuntu Server (18.04+)
+ - Ubuntu Server (18.04+ - last tested on 24.04)
  - non-root user with sudo privileges
  
 ## Installation
@@ -44,7 +44,7 @@ To test an email route, use `bash testaddress.sh {emailaddress}` - eg `bash test
 
 ### Reasoning
 
-Although most ESP's offer inbound email parsing, it creates unnecessary vendor lock-in. Most also do not offer wildcard subdomains. Separation of concerns is extremely important in your code AND in your architecture.
+Although most ESP's offer inbound email parsing, most charge for this, and it creates unnecessary vendor lock-in. Most also do not offer wildcard subdomains. Separation of concerns is extremely important in your code AND in your architecture.
 
 This simple Postfix PHP daemon setup can handle all your incoming email for a super low price (a basic 2GB Digital Ocean droplet can easily handle many thousands of emails per day). It handles wildcard subdomains, and removes all reliance on outside parties.
 
