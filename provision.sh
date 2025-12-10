@@ -91,9 +91,9 @@ CURDIR=$(
 
 CONFIG=$(cat <<__EOT
 $DELIM
-virtual_mailbox_domains = pcre:$CURDIR/config/vdomains
+virtual_mailbox_domains = pcre:/etc/postfix/vdomains
 virtual_mailbox_base = /home/$USERNAME/mail
-virtual_mailbox_maps = pcre:$CURDIR/config/vmailbox
+virtual_mailbox_maps = pcre:/etc/postfix/vmailbox
 virtual_minimum_uid = $MYUID
 virtual_uid_maps = static:$MYUID
 virtual_gid_maps = static:$MYUID
@@ -122,11 +122,15 @@ fi
 # ensure virtual files and dirs
 # ==============================
 echo -e "checking presence of config files and dirs"
-if [ ! -f $CURDIR/config/vdomains ]; then
-	touch $CURDIR/config/vdomains
+if [ ! -f /etc/postfix/vdomains ]; then
+	sudo touch /etc/postfix/vdomains
+	sudo chown root:postfix /etc/postfix/vdomains
+	sudo chmod 644 /etc/postfix/vdomains
 fi
-if [ ! -f $CURDIR/config/vmailbox ]; then
-	touch $CURDIR/config/vmailbox
+if [ ! -f /etc/postfix/vmailbox ]; then
+	sudo touch /etc/postfix/vmailbox
+	sudo chown root:postfix /etc/postfix/vmailbox
+	sudo chmod 644 /etc/postfix/vmailbox
 fi
 if [ ! -d /home/$USERNAME/mail ]; then
 	mkdir /home/$USERNAME/mail

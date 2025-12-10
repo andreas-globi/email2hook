@@ -9,7 +9,7 @@ Easily set up an Ubuntu server as a mailsink that receives inbound email and POS
  - Postfix accepts email and saves it to /home/{USERNAME}/mail/
  - PHP daemons pick up email from /home/{USERNAME}/mail and POSTs to your webhooks
  - After posting, email is deleted, and on failure, is re-tried with exponential back-off at the end of the queue
- - Postfix virtual config files stored in `config/vdomains` and `config/vmailbox`
+ - Postfix virtual config files stored in `/etc/postfix/vdomains` and `/etc/postfix/vmailbox` (owned by root:postfix with 644 permissions)
  - Postfix mailbox files are default `{timestamp}.{idnumber}.{hostname}`
  - Failed mailbox files are named `xerr{timestamp}.{error_count}.{original_timestamp}.{idnumber}.{hostname}` - this ensures failures go to the bottom of the queue
 

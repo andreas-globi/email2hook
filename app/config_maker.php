@@ -38,5 +38,18 @@ foreach ( $config as $app ) {
 	
 }
 
-file_put_contents(__DIR__."/../config/vdomains", implode("\n", $domains)."\n");
-file_put_contents(__DIR__."/../config/vmailbox", implode("\n", $mailboxes)."\n");
+// Write to temporary files first
+$tmpVdomains = tempnam(sys_get_temp_dir(), 'vdomains');
+$tmpVmailbox = tempnam(sys_get_temp_dir(), 'vmailbox');
+
+file_put_contents($tmpVdomains, implode("\n", $domains)."\n");
+file_put_contents($tmpVmailbox, implode("\n", $mailboxes)."\n");
+
+// Move to /etc/postfix with sudo
+exec("sudo mv " . escapeshellarg($tmpVdomains) . " /etc/postfix/vdomains");
+exec("sudo chown root:postfix /etc/postfix/vdomains");
+exec("sudo chmod 644 /etc/postfix/vdomains");
+
+exec("sudo mv " . escapeshellarg($tmpVmailbox) . " /etc/postfix/vmailbox");
+exec("sudo chown root:postfix /etc/postfix/vmailbox");
+exec("sudo chmod 644 /etc/postfix/vmailbox");
