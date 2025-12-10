@@ -20,14 +20,14 @@ CURDIR=$(
 )
 CONFDIR="$CURDIR/config/"
 
-DOMAIN=$(postmap -q "$ADDRESS" pcre:/etc/postfix/vdomains)
+DOMAIN=$(postmap -q "$ADDRESS" pcre:/etc/email2hook/vdomains)
 if [ "$DOMAIN" = "" ]; then
 	DOMAIN="FAIL"
 fi
 
-MAILBOX=$(postmap -q "$ADDRESS" pcre:/etc/postfix/vmailbox)
+MAILBOX=$(postmap -q "$ADDRESS" pcre:/etc/email2hook/vmailbox)
 if [ "$MAILBOX" = "" ]; then
-	MAILBOX="FAIL ERROR"
+	MAILBOX="FAIL"
 fi
 
-echo -e "$ADDRESS $DOMAIN $MAILBOX"
+echo -e "$ADDRESS domain $DOMAIN map $MAILBOX"

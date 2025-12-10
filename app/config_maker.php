@@ -1,6 +1,11 @@
 <?php
 
 // creates config files for postfix from php config array
+error_reporting(E_ALL);
+
+if ( posix_getuid() != 0 ) {
+	throw new Exception("Must be run as root");
+}
 
 require_once __DIR__."/include.php";
 
@@ -38,18 +43,5 @@ foreach ( $config as $app ) {
 	
 }
 
-// Write to temporary files first
-$tmpVdomains = tempnam(sys_get_temp_dir(), 'vdomains');
-$tmpVmailbox = tempnam(sys_get_temp_dir(), 'vmailbox');
-
-file_put_contents($tmpVdomains, implode("\n", $domains)."\n");
-file_put_contents($tmpVmailbox, implode("\n", $mailboxes)."\n");
-
-// Move to /etc/postfix with sudo
-exec("sudo mv " . escapeshellarg($tmpVdomains) . " /etc/postfix/vdomains");
-exec("sudo chown root:postfix /etc/postfix/vdomains");
-exec("sudo chmod 644 /etc/postfix/vdomains");
-
-exec("sudo mv " . escapeshellarg($tmpVmailbox) . " /etc/postfix/vmailbox");
-exec("sudo chown root:postfix /etc/postfix/vmailbox");
-exec("sudo chmod 644 /etc/postfix/vmailbox");
+file_put_contents("/etc/email2hook/vdomains", implode("\n", $domains)."\n");
+file_put_contents("/etc/email2hook/vmailbox", implode("\n", $mailboxes)."\n");

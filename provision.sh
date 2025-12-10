@@ -91,9 +91,9 @@ CURDIR=$(
 
 CONFIG=$(cat <<__EOT
 $DELIM
-virtual_mailbox_domains = pcre:/etc/postfix/vdomains
+virtual_mailbox_domains = pcre:/etc/email2hook/vdomains
 virtual_mailbox_base = /home/$USERNAME/mail
-virtual_mailbox_maps = pcre:/etc/postfix/vmailbox
+virtual_mailbox_maps = pcre:/etc/email2hook/vmailbox
 virtual_minimum_uid = $MYUID
 virtual_uid_maps = static:$MYUID
 virtual_gid_maps = static:$MYUID
@@ -122,23 +122,23 @@ fi
 # ensure virtual files and dirs
 # ==============================
 echo -e "checking presence of config files and dirs"
-if [ ! -f /etc/postfix/vdomains ]; then
-	sudo touch /etc/postfix/vdomains
-	sudo chown root:postfix /etc/postfix/vdomains
-	sudo chmod 644 /etc/postfix/vdomains
+if [ ! -f /etc/email2hook/vdomains ]; then
+	sudo touch /etc/email2hook/vdomains
+	sudo chown root:postfix /etc/email2hook/vdomains
+	sudo chmod 644 /etc/email2hook/vdomains
 fi
-if [ ! -f /etc/postfix/vmailbox ]; then
-	sudo touch /etc/postfix/vmailbox
-	sudo chown root:postfix /etc/postfix/vmailbox
-	sudo chmod 644 /etc/postfix/vmailbox
+if [ ! -f /etc/email2hook/vmailbox ]; then
+	sudo touch /etc/email2hook/vmailbox
+	sudo chown root:postfix /etc/email2hook/vmailbox
+	sudo chmod 644 /etc/email2hook/vmailbox
 fi
 if [ ! -d /home/$USERNAME/mail ]; then
 	mkdir /home/$USERNAME/mail
 fi
-if [ ! -f /var/log/email2hook.log ]; then
-	sudo touch /var/log/email2hook.log
-	sudo chown $USERNAME:$USERNAME /var/log/email2hook.log
-	sudo chmod 664 /var/log/email2hook.log
+if [ ! -f /home/$USERNAME/email2hook.log ]; then
+	sudo touch /home/$USERNAME/email2hook.log
+	sudo chown $USERNAME:$USERNAME /home/$USERNAME/email2hook.log
+	sudo chmod 664 /home/$USERNAME/email2hook.log
 fi
 
 CONFIG=$(cat <<__EOT
