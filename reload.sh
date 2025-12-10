@@ -8,7 +8,7 @@ CURDIR=$(
 )
 
 echo -e "reloading"
-if ! php -q $CURDIR/app/config_maker.php; then
+if ! sudo php -q $CURDIR/app/config_maker.php; then
 	echo -e "ERROR: failed generating config - please fix config file"
 fi
 
